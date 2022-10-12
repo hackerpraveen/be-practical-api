@@ -54,6 +54,12 @@ app.post("/apply-post/insert",(req,res) =>{
       message : "Post not added",
   })})
 })
+app.post("/apply-post/delete",(req,res,next)=>{
+  ApplyJob.deleteOne({_id : req.body._id})
+  .then(() => {res.json({message : "deleted Successful"})})
+  .catch(error=>{res.json({message : "deleted Unsuccessful"})})
+
+})
 mongoose.Promise = global.Promise;
 const url = `mongodb+srv://admin:admin@cluster0.zxs4hsx.mongodb.net/?retryWrites=true&w=majority`;
 
