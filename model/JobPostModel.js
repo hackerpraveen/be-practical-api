@@ -14,7 +14,9 @@ let data = new Schema(
       desiredSkills: {
       type: String,
     },
-
+    dropMail:{
+      type: String,
+    },
     // experience: {
     //   type: String,
     // },
