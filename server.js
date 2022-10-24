@@ -68,18 +68,19 @@ app.post("/login", (request, res) => {
   bcrypt.compare(request.body.password, user.value).then((passwordCheck) => {
 
     // check if password matches
+    if(request.body.email!=user.name){
+      return res.status(400).send({
+        message: "UserName does not found"
+      });
+
+    }
+    else{
     if(!passwordCheck) {
       return res.status(400).send({
         message: "Passwords does not match"
       });
     }else{
-      if(request.body.email!=user.name){
-        return res.status(400).send({
-          message: "UserName does not found"
-        });
-
-      }
-      else{
+     
         const token = jwt.sign(
           {
             userEmail: request.body.email,
