@@ -8,12 +8,16 @@ const ApplyJob =    require("./model/ApplyJob");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+
 
 const app = express();
 
 const JobPost = require("./route/JobPostRoute");
 
-
+const user= {name:"admin@bepractical",
+value:"$2b$10$419pH2dsOrEdJryyVfjZvONOeCG4Le.hf91oBx7r5lbQ7MitpIpfK"}
 app.use(cors());
 app.use(fileupload());
 app.use(express.static("files"));
@@ -60,6 +64,43 @@ app.post("/apply-post/delete",(req,res,next)=>{
   .catch(error=>{res.json({message : "deleted Unsuccessful"})})
 
 })
+app.post("/login", (request, res) => {
+  bcrypt.compare(request.body.password, user.value).then((passwordCheck) => {
+
+    // check if password matches
+    if(!passwordCheck) {
+      return res.status(400).send({
+        message: "Passwords does not match"
+      });
+    }else{
+      if(request.body.email!=user.name){
+        return res.status(400).send({
+          message: "UserName does not found"
+        });
+
+      }
+      else{
+        const token = jwt.sign(
+          {
+            userEmail: request.body.email,
+          },
+          "RANDOM-TOKEN",
+          { expiresIn: "24h" }
+        );
+        res.status(200).send({
+          message: "Login Successful",
+          email: request.body.email,
+          token,
+        });
+
+      }
+     
+    }
+  })
+
+});
+
+
 mongoose.Promise = global.Promise;
 const url = `mongodb+srv://admin:admin@cluster0.zxs4hsx.mongodb.net/?retryWrites=true&w=majority`;
 
